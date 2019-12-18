@@ -89,33 +89,7 @@ class SnackbarComponent extends Component {
     }
   }
 
-  // UNSAFE_componentWillReceiveProps(nextProps) {
-  // if (nextProps.visible && !this.props.visible) {
-  //   Animated.timing(this.state.translateValue, {
-  //     duration: durationValues.entry,
-  //     toValue: 1,
-  //     easing: easingValues.entry,
-  //   }).start();
-  //   if (nextProps.autoHidingTime) {
-  //     const hideFunc = this.hideSnackbar.bind(this);
-  //     setTimeout(hideFunc, nextProps.autoHidingTime);
-  //   }
-  // } else if (!nextProps.visible && this.props.visible) {
-  //   this.hideSnackbar();
-  // }
-  // }
-
   shouldComponentUpdate(nextProps, nextState) {
-    if (
-      nextProps.visible !== this.props.visible
-      || nextState.hideDistance !== this.state.hideDistance
-    ) {
-      if (nextProps.visible) {
-        this.props.distanceCallback(nextState.hideDistance + this.props.bottom);
-      } else {
-        this.props.distanceCallback(this.props.bottom);
-      }
-    }
     if (nextProps.visible && !this.props.visible) {
       Animated.timing(this.state.translateValue, {
         duration: durationValues.entry,
@@ -129,7 +103,25 @@ class SnackbarComponent extends Component {
     } else if (!nextProps.visible && this.props.visible) {
       this.hideSnackbar();
     }
-    return nextProps.visible !== this.props.visible
+    return true
+  }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (
+      this.props.visible !== prevProps.visible
+      || this.state.hideDistance !== prevState.hideDistance
+    ) {
+      if (this.props.visible) {
+        prevProps.distanceCallback(this.state.hideDistance + prevProps.bottom);
+      } else {
+        prevProps.distanceCallback(this.props.bottom);
+      }
+    }
+    return prevProps.visible
+  }
+
+  componentDidUpdate(nextProps, nextState, snapshot){
+    
   }
 
   /**
