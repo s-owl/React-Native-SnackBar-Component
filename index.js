@@ -129,6 +129,7 @@ class SnackbarComponent extends Component {
     } else if (!nextProps.visible && this.props.visible) {
       this.hideSnackbar();
     }
+    return nextProps.visible !== this.props.visible
   }
 
   /**
